@@ -185,8 +185,8 @@
             // _PickerStatusStrip
             // 
             this._PickerStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._PickerStatusLabel,
-            this._DownloadStatusLabel});
+            this._DownloadStatusLabel,
+            this._PickerStatusLabel});
             this._PickerStatusStrip.Location = new System.Drawing.Point(0, 939);
             this._PickerStatusStrip.Name = "_PickerStatusStrip";
             this._PickerStatusStrip.Padding = new System.Windows.Forms.Padding(3, 0, 44, 0);
@@ -261,7 +261,7 @@
             this.Name = "GamePicker";
             this.Opacity = 0.98D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Steam Achievement Manager - Local 1.0";
+            this.Text = "Steam Achievement Export - 1.0";
             this.Load += new System.EventHandler(this.GamePicker_Load);
             this._PickerToolStrip.ResumeLayout(false);
             this._PickerToolStrip.PerformLayout();

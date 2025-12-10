@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.ToolStripSeparator _ToolStripSeparator1;
             System.Windows.Forms.ToolStripSeparator _ToolStripSeparator2;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Manager));
@@ -36,18 +35,14 @@
             this._StoreButton = new System.Windows.Forms.ToolStripButton();
             this._ReloadButton = new System.Windows.Forms.ToolStripButton();
             this._ResetButton = new System.Windows.Forms.ToolStripButton();
-            this._AchievementImageList = new System.Windows.Forms.ImageList(this.components);
+            this._AchievementImageList = new System.Windows.Forms.ImageList();
             this._MainStatusStrip = new System.Windows.Forms.StatusStrip();
             this._CountryStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this._GameStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this._DownloadStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this._CallbackTimer = new System.Windows.Forms.Timer(this.components);
+            this._CallbackTimer = new System.Windows.Forms.Timer();
             this._MainTabControl = new System.Windows.Forms.TabControl();
             this._AchievementsTabPage = new System.Windows.Forms.TabPage();
-            this._AchievementListView = new SAM.Game.DoubleBufferedListView();
-            this._AchievementNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this._AchievementDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this._AchievementUnlockTimeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._AchievementsToolStrip = new System.Windows.Forms.ToolStrip();
             this._LockAllButton = new System.Windows.Forms.ToolStripButton();
             this._InvertAllButton = new System.Windows.Forms.ToolStripButton();
@@ -60,6 +55,10 @@
             this._StatisticsTabPage = new System.Windows.Forms.TabPage();
             this._EnableStatsEditingCheckBox = new System.Windows.Forms.CheckBox();
             this._StatisticsDataGridView = new System.Windows.Forms.DataGridView();
+            this._AchievementListView = new SAM.Game.DoubleBufferedListView();
+            this._AchievementNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this._AchievementDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this._AchievementUnlockTimeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             _ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             _ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this._MainToolStrip.SuspendLayout();
@@ -160,6 +159,7 @@
             // _DownloadStatusLabel
             // 
             this._DownloadStatusLabel.Image = global::SAM.Game.Resources.Download;
+            this._DownloadStatusLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this._DownloadStatusLabel.Name = "_DownloadStatusLabel";
             this._DownloadStatusLabel.Size = new System.Drawing.Size(111, 17);
             this._DownloadStatusLabel.Text = "Download status";
@@ -196,49 +196,6 @@
             this._AchievementsTabPage.TabIndex = 0;
             this._AchievementsTabPage.Text = "Achievements";
             this._AchievementsTabPage.UseVisualStyleBackColor = true;
-            // 
-            // _AchievementListView
-            // 
-            this._AchievementListView.Activation = System.Windows.Forms.ItemActivation.OneClick;
-            this._AchievementListView.BackColor = System.Drawing.Color.Gainsboro;
-            this._AchievementListView.BackgroundImageTiled = true;
-            this._AchievementListView.CheckBoxes = true;
-            this._AchievementListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this._AchievementNameColumnHeader,
-            this._AchievementDescriptionColumnHeader,
-            this._AchievementUnlockTimeColumnHeader});
-            this._AchievementListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._AchievementListView.ForeColor = System.Drawing.Color.Black;
-            this._AchievementListView.FullRowSelect = true;
-            this._AchievementListView.GridLines = true;
-            this._AchievementListView.HideSelection = false;
-            this._AchievementListView.LargeImageList = this._AchievementImageList;
-            this._AchievementListView.Location = new System.Drawing.Point(10, 34);
-            this._AchievementListView.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
-            this._AchievementListView.Name = "_AchievementListView";
-            this._AchievementListView.Size = new System.Drawing.Size(2176, 858);
-            this._AchievementListView.SmallImageList = this._AchievementImageList;
-            this._AchievementListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this._AchievementListView.TabIndex = 4;
-            this._AchievementListView.UseCompatibleStateImageBehavior = false;
-            this._AchievementListView.View = System.Windows.Forms.View.Details;
-            this._AchievementListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.OnCheckAchievement);
-            this._AchievementListView.SelectedIndexChanged += new System.EventHandler(this._AchievementListView_SelectedIndexChanged);
-            // 
-            // _AchievementNameColumnHeader
-            // 
-            this._AchievementNameColumnHeader.Text = "Name";
-            this._AchievementNameColumnHeader.Width = 200;
-            // 
-            // _AchievementDescriptionColumnHeader
-            // 
-            this._AchievementDescriptionColumnHeader.Text = "Description";
-            this._AchievementDescriptionColumnHeader.Width = 300;
-            // 
-            // _AchievementUnlockTimeColumnHeader
-            // 
-            this._AchievementUnlockTimeColumnHeader.Text = "Unlock Time";
-            this._AchievementUnlockTimeColumnHeader.Width = 160;
             // 
             // _AchievementsToolStrip
             // 
@@ -378,6 +335,49 @@
             this._StatisticsDataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnStatCellEndEdit);
             this._StatisticsDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.OnStatDataError);
             // 
+            // _AchievementListView
+            // 
+            this._AchievementListView.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this._AchievementListView.BackColor = System.Drawing.Color.Gainsboro;
+            this._AchievementListView.BackgroundImageTiled = true;
+            this._AchievementListView.CheckBoxes = true;
+            this._AchievementListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this._AchievementNameColumnHeader,
+            this._AchievementDescriptionColumnHeader,
+            this._AchievementUnlockTimeColumnHeader});
+            this._AchievementListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._AchievementListView.ForeColor = System.Drawing.Color.Black;
+            this._AchievementListView.FullRowSelect = true;
+            this._AchievementListView.GridLines = true;
+            this._AchievementListView.HideSelection = false;
+            this._AchievementListView.LargeImageList = this._AchievementImageList;
+            this._AchievementListView.Location = new System.Drawing.Point(10, 34);
+            this._AchievementListView.Margin = new System.Windows.Forms.Padding(10, 9, 10, 9);
+            this._AchievementListView.Name = "_AchievementListView";
+            this._AchievementListView.Size = new System.Drawing.Size(2176, 858);
+            this._AchievementListView.SmallImageList = this._AchievementImageList;
+            this._AchievementListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this._AchievementListView.TabIndex = 4;
+            this._AchievementListView.UseCompatibleStateImageBehavior = false;
+            this._AchievementListView.View = System.Windows.Forms.View.Details;
+            this._AchievementListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.OnCheckAchievement);
+            this._AchievementListView.SelectedIndexChanged += new System.EventHandler(this._AchievementListView_SelectedIndexChanged);
+            // 
+            // _AchievementNameColumnHeader
+            // 
+            this._AchievementNameColumnHeader.Text = "Name";
+            this._AchievementNameColumnHeader.Width = 200;
+            // 
+            // _AchievementDescriptionColumnHeader
+            // 
+            this._AchievementDescriptionColumnHeader.Text = "Description";
+            this._AchievementDescriptionColumnHeader.Width = 300;
+            // 
+            // _AchievementUnlockTimeColumnHeader
+            // 
+            this._AchievementUnlockTimeColumnHeader.Text = "Unlock Time";
+            this._AchievementUnlockTimeColumnHeader.Width = 160;
+            // 
             // Manager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
@@ -391,7 +391,7 @@
             this.MinimumSize = new System.Drawing.Size(1918, 70);
             this.Name = "Manager";
             this.Opacity = 0.98D;
-            this.Text = "Steam Achievement Manager - Local 1.0";
+            this.Text = "Steam Achievement Export - 1.0";
             this._MainToolStrip.ResumeLayout(false);
             this._MainToolStrip.PerformLayout();
             this._MainStatusStrip.ResumeLayout(false);

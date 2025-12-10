@@ -1,8 +1,8 @@
-# Steam Achievement Manager (SAM) - LOCAL SAVE FORK
+# Steam Achievement Export
 
-This repository contains a modified fork of the original Steam Achievement Manager (SAM) open-source tool.
+This repository contains a modified fork of Steam Achievement Manager (SAM).
 
-**The core functionality of this fork has been changed:** **Achievement modifications are NOT pushed to the Steam API.** Instead, the tool captures the selected achievement state and saves it locally to a persistent INI file.
+**The core functionality of SAM has been changed:** **Achievement modifications are NOT pushed to the Steam API.** Instead, the tool captures the selected achievement state and saves it locally to a persistent INI file.
 
 ## 💾 Local Achievement Saving Feature
 

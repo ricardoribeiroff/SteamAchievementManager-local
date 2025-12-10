@@ -9,15 +9,15 @@
  * freely, subject to the following restrictions:
  *
  * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would
- *    be appreciated but is not required.
+ * claim that you wrote the original software. If you use this software
+ * in a product, an acknowledgment in the product documentation would
+ * be appreciated but is not required.
  *
  * 2. Altered source versions must be plainly marked as such, and must not
- *    be misrepresented as being the original software.
+ * be misrepresented as being the original software.
  *
  * 3. This notice may not be removed or altered from any source
- *    distribution.
+ * distribution.
  */
 
 using System;
@@ -50,14 +50,17 @@ namespace SAM.Game
 
         private readonly API.Callbacks.UserStatsReceived _UserStatsReceivedCallback;
 
-        //private API.Callback<APITypes.UserStatsStored> UserStatsStoredCallback;
+        // Modificação: Nome do arquivo INI
+        private const string ACHIEVEMENTS_INI_FILENAME = "achievements.ini";
+
+        // NOVO: Define a pasta raiz fixa do RUNE
+        private const string RUNE_BASE_PATH = @"C:\Users\Public\Documents\Steam\RUNE";
 
         public Manager(long gameId, API.Client client)
         {
             this.InitializeComponent();
 
             this._MainTabControl.SelectedTab = this._AchievementsTabPage;
-            //this.statisticsList.Enabled = this.checkBox1.Checked;
 
             this._AchievementImageList.Images.Add("Blank", new Bitmap(64, 64));
 
@@ -100,8 +103,6 @@ namespace SAM.Game
 
             this._UserStatsReceivedCallback = client.CreateAndRegisterCallback<API.Callbacks.UserStatsReceived>();
             this._UserStatsReceivedCallback.OnRun += this.OnUserStatsReceived;
-
-            //this.UserStatsStoredCallback = new API.Callback(1102, new API.Callback.CallbackFunction(this.OnUserStatsStored));
 
             this.RefreshStats();
         }
@@ -246,97 +247,97 @@ namespace SAM.Game
                 }
 
                 var rawType = stat["type_int"].Valid
-                                  ? stat["type_int"].AsInteger(0)
-                                  : stat["type"].AsInteger(0);
+                                     ? stat["type_int"].AsInteger(0)
+                                     : stat["type"].AsInteger(0);
                 var type = (APITypes.UserStatType)rawType;
                 switch (type)
                 {
                     case APITypes.UserStatType.Invalid:
-                    {
-                        break;
-                    }
+                        {
+                            break;
+                        }
 
                     case APITypes.UserStatType.Integer:
-                    {
-                        var id = stat["name"].AsString("");
-                        string name = GetLocalizedString(stat["display"]["name"], currentLanguage, id);
-
-                        this._StatDefinitions.Add(new Stats.IntegerStatDefinition()
                         {
-                            Id = stat["name"].AsString(""),
-                            DisplayName = name,
-                            MinValue = stat["min"].AsInteger(int.MinValue),
-                            MaxValue = stat["max"].AsInteger(int.MaxValue),
-                            MaxChange = stat["maxchange"].AsInteger(0),
-                            IncrementOnly = stat["incrementonly"].AsBoolean(false),
-                            SetByTrustedGameServer = stat["bSetByTrustedGS"].AsBoolean(false),
-                            DefaultValue = stat["default"].AsInteger(0),
-                            Permission = stat["permission"].AsInteger(0),
-                        });
-                        break;
-                    }
+                            var id = stat["name"].AsString("");
+                            string name = GetLocalizedString(stat["display"]["name"], currentLanguage, id);
+
+                            this._StatDefinitions.Add(new Stats.IntegerStatDefinition()
+                            {
+                                Id = stat["name"].AsString(""),
+                                DisplayName = name,
+                                MinValue = stat["min"].AsInteger(int.MinValue),
+                                MaxValue = stat["max"].AsInteger(int.MaxValue),
+                                MaxChange = stat["maxchange"].AsInteger(0),
+                                IncrementOnly = stat["incrementonly"].AsBoolean(false),
+                                SetByTrustedGameServer = stat["bSetByTrustedGS"].AsBoolean(false),
+                                DefaultValue = stat["default"].AsInteger(0),
+                                Permission = stat["permission"].AsInteger(0),
+                            });
+                            break;
+                        }
 
                     case APITypes.UserStatType.Float:
                     case APITypes.UserStatType.AverageRate:
-                    {
-                        var id = stat["name"].AsString("");
-                        string name = GetLocalizedString(stat["display"]["name"], currentLanguage, id);
-
-                        this._StatDefinitions.Add(new Stats.FloatStatDefinition()
                         {
-                            Id = stat["name"].AsString(""),
-                            DisplayName = name,
-                            MinValue = stat["min"].AsFloat(float.MinValue),
-                            MaxValue = stat["max"].AsFloat(float.MaxValue),
-                            MaxChange = stat["maxchange"].AsFloat(0.0f),
-                            IncrementOnly = stat["incrementonly"].AsBoolean(false),
-                            DefaultValue = stat["default"].AsFloat(0.0f),
-                            Permission = stat["permission"].AsInteger(0),
-                        });
-                        break;
-                    }
+                            var id = stat["name"].AsString("");
+                            string name = GetLocalizedString(stat["display"]["name"], currentLanguage, id);
+
+                            this._StatDefinitions.Add(new Stats.FloatStatDefinition()
+                            {
+                                Id = stat["name"].AsString(""),
+                                DisplayName = name,
+                                MinValue = stat["min"].AsFloat(float.MinValue),
+                                MaxValue = stat["max"].AsFloat(float.MaxValue),
+                                MaxChange = stat["maxchange"].AsFloat(0.0f),
+                                IncrementOnly = stat["incrementonly"].AsBoolean(false),
+                                DefaultValue = stat["default"].AsFloat(0.0f),
+                                Permission = stat["permission"].AsInteger(0),
+                            });
+                            break;
+                        }
 
                     case APITypes.UserStatType.Achievements:
                     case APITypes.UserStatType.GroupAchievements:
-                    {
-                        if (stat.Children != null)
                         {
-                            foreach (var bits in stat.Children.Where(
-                                b => string.Compare(b.Name, "bits", StringComparison.InvariantCultureIgnoreCase) == 0))
+                            if (stat.Children != null)
                             {
-                                if (bits.Valid == false ||
-                                    bits.Children == null)
+                                foreach (var bits in stat.Children.Where(
+                                    b => string.Compare(b.Name, "bits", StringComparison.InvariantCultureIgnoreCase) == 0))
                                 {
-                                    continue;
-                                }
-
-                                foreach (var bit in bits.Children)
-                                {
-                                    string id = bit["name"].AsString("");
-                                    string name = GetLocalizedString(bit["display"]["name"], currentLanguage, id);
-                                    string desc = GetLocalizedString(bit["display"]["desc"], currentLanguage, "");
-
-                                    this._AchievementDefinitions.Add(new()
+                                    if (bits.Valid == false ||
+                                        bits.Children == null)
                                     {
-                                        Id = id,
-                                        Name = name,
-                                        Description = desc,
-                                        IconNormal = bit["display"]["icon"].AsString(""),
-                                        IconLocked = bit["display"]["icon_gray"].AsString(""),
-                                        IsHidden = bit["display"]["hidden"].AsBoolean(false),
-                                        Permission = bit["permission"].AsInteger(0),
-                                    });
+                                        continue;
+                                    }
+
+                                    foreach (var bit in bits.Children)
+                                    {
+                                        string id = bit["name"].AsString("");
+                                        string name = GetLocalizedString(bit["display"]["name"], currentLanguage, id);
+                                        string desc = GetLocalizedString(bit["display"]["desc"], currentLanguage, "");
+
+                                        this._AchievementDefinitions.Add(new()
+                                        {
+                                            Id = id,
+                                            Name = name,
+                                            Description = desc,
+                                            IconNormal = bit["display"]["icon"].AsString(""),
+                                            IconLocked = bit["display"]["icon_gray"].AsString(""),
+                                            IsHidden = bit["display"]["hidden"].AsBoolean(false),
+                                            Permission = bit["permission"].AsInteger(0),
+                                        });
+                                    }
                                 }
                             }
+
+                            break;
                         }
 
-                        break;
-                    }
-
                     default:
-                    {
-                        throw new InvalidOperationException("invalid stat type");
-                    }
+                        {
+                            throw new InvalidOperationException("invalid stat type");
+                        }
                 }
             }
 
@@ -402,8 +403,6 @@ namespace SAM.Game
 
             var steamId = this._SteamClient.SteamUser.GetSteamId();
 
-            // This still triggers the UserStatsReceived callback, in addition to the callresult.
-            // No need to implement callresults for the time being.
             var callHandle = this._SteamClient.SteamUserStats.RequestUserStats(steamId);
             if (callHandle == API.CallHandle.Invalid)
             {
@@ -427,7 +426,6 @@ namespace SAM.Game
 
             this._AchievementListView.Items.Clear();
             this._AchievementListView.BeginUpdate();
-            //this.Achievements.Clear();
 
             bool wantLocked = this._DisplayLockedOnlyButton.Checked == true;
             bool wantUnlocked = this._DisplayUnlockedOnlyButton.Checked == true;
@@ -472,7 +470,11 @@ namespace SAM.Game
                     IsAchieved = isAchieved,
                     UnlockTime = isAchieved == true && unlockTime > 0
                         ? DateTimeOffset.FromUnixTimeSeconds(unlockTime).LocalDateTime
-                        : null,
+                        : (DateTime?)null,
+
+                    // Armazena o timestamp Unix original para uso no INI
+                    UnlockTimeUnix = unlockTime > 0 ? (long?)unlockTime : null,
+
                     IconNormal = string.IsNullOrEmpty(def.IconNormal) ? null : def.IconNormal,
                     IconLocked = string.IsNullOrEmpty(def.IconLocked) ? def.IconNormal : def.IconLocked,
                     Permission = def.Permission,
@@ -501,7 +503,7 @@ namespace SAM.Game
                 }
 
                 item.SubItems.Add(info.UnlockTime.HasValue == true
-                    ? info.UnlockTime.Value.ToString()
+                    ? info.UnlockTime.Value.ToString(CultureInfo.InvariantCulture)
                     : "");
 
                 info.ImageIndex = 0;
@@ -583,45 +585,75 @@ namespace SAM.Game
 
         private int StoreAchievements()
         {
+            // Funções de API Steam desabilitadas aqui para forçar o salvamento local.
+            return 0;
+        }
+
+        // --- FUNÇÃO DE SALVAMENTO INI CUSTOMIZADA (CAMINHO FIXO) ---
+        private int SaveAchievementsToIni()
+        {
             if (this._AchievementListView.Items.Count == 0)
             {
                 return 0;
             }
 
-            List<Stats.AchievementInfo> achievements = new();
+            var content = new List<string>();
+
+            int achievementsSavedCount = 0;
+
+            // Usamos o Unix Time atual como fallback se a conquista não tinha um timestamp anterior
+            long currentUnixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
             foreach (ListViewItem item in this._AchievementListView.Items)
             {
-                if (item.Tag is not Stats.AchievementInfo achievementInfo ||
-                    achievementInfo.IsAchieved == item.Checked)
+                if (item.Checked && item.Tag is Stats.AchievementInfo achievementInfo)
                 {
-                    continue;
-                }
+                    // Usa o UnlockTimeUnix existente ou o tempo Unix atual
+                    long unlockTime = achievementInfo.UnlockTimeUnix ?? currentUnixTime;
 
-                achievementInfo.IsAchieved = item.Checked;
-                achievements.Add(achievementInfo);
-            }
+                    // Adiciona o cabeçalho da seção [ID_DA_CONQUISTA]
+                    content.Add($"[{achievementInfo.Id}]");
 
-            if (achievements.Count == 0)
-            {
-                return 0;
-            }
+                    // Adiciona as chaves e valores no formato solicitado
+                    content.Add($"Achieved=1");
+                    content.Add($"UnlockTime={unlockTime}");
+                    content.Add(""); // Linha em branco para separar as seções
 
-            foreach (var info in achievements)
-            {
-                if (this._SteamClient.SteamUserStats.SetAchievement(info.Id, info.IsAchieved) == false)
-                {
-                    MessageBox.Show(
-                        this,
-                        $"An error occurred while setting the state for {info.Id}, aborting store.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                    return -1;
+                    achievementsSavedCount++;
                 }
             }
 
-            return achievements.Count;
+            try
+            {
+                // 1. Define a pasta raiz fixa (C:\Users\Public\Documents\Steam\RUNE)
+                string rootPath = RUNE_BASE_PATH;
+
+                // 2. Define o diretório baseado no GameId (ex: ...\RUNE\123456)
+                string gameIdString = this._GameId.ToString(CultureInfo.InvariantCulture);
+                string appDirectory = Path.Combine(rootPath, gameIdString);
+
+                // 3. Cria o diretório se ele não existir (incluindo todas as pastas pais, se necessário)
+                Directory.CreateDirectory(appDirectory);
+
+                // 4. Define o caminho completo do arquivo (ex: ...\RUNE\123456\achievements.ini)
+                var savePath = Path.Combine(appDirectory, ACHIEVEMENTS_INI_FILENAME);
+
+                // 5. Escreve o arquivo
+                File.WriteAllLines(savePath, content);
+                return achievementsSavedCount;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    this,
+                    $"Error while saving achievements to the fixed path {RUNE_BASE_PATH}\\{this._GameId}:\n{ex.Message}",
+                    "File Save Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return -1;
+            }
         }
+        // --- FIM DA FUNÇÃO INI CUSTOMIZADA ---
 
         private int StoreStatistics()
         {
@@ -727,49 +759,32 @@ namespace SAM.Game
 
         private bool Store()
         {
-            if (this._SteamClient.SteamUserStats.StoreStats() == false)
-            {
-                MessageBox.Show(
-                    this,
-                    "An error occurred while storing, aborting.",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-                return false;
-            }
-
             return true;
         }
 
         private void OnStore(object sender, EventArgs e)
         {
-            int achievements = this.StoreAchievements();
-            if (achievements < 0)
+            int achievementsSaved = this.SaveAchievementsToIni();
+
+            if (achievementsSaved < 0)
             {
                 this.RefreshStats();
                 return;
             }
 
-            int stats = this.StoreStatistics();
-            if (stats < 0)
-            {
-                this.RefreshStats();
-                return;
-            }
+            this.RefreshStats();
 
-            if (this.Store() == false)
-            {
-                this.RefreshStats();
-                return;
-            }
+            string folderName = this._GameId.ToString(CultureInfo.InvariantCulture);
+            string message = achievementsSaved > 0
+                ? $"Stored {achievementsSaved} achievements locally to {RUNE_BASE_PATH}\\{folderName}\\{ACHIEVEMENTS_INI_FILENAME}."
+                : $"No achievements were checked to be saved.";
 
             MessageBox.Show(
                 this,
-                $"Stored {achievements} achievements and {stats} statistics.",
-                "Information",
+                message,
+                "Local Save Complete",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
-            this.RefreshStats();
         }
 
         private void OnStatDataError(object sender, DataGridViewDataErrorEventArgs e)
